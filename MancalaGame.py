@@ -1,17 +1,6 @@
 import random
-random.seed(109)
 
-class color:
-   PURPLE = '\033[95m'
-   CYAN = '\033[96m'
-   DARKCYAN = '\033[36m'
-   BLUE = '\033[94m'
-   GREEN = '\033[92m'
-   YELLOW = '\033[93m'
-   RED = '\033[91m'
-   BOLD = '\033[1m'
-   UNDERLINE = '\033[4m'
-   END = '\033[0m'
+from color import color
 
 class Mancala:
     def __init__(self, pits_per_player=6, stones_per_pit=4):
@@ -28,15 +17,18 @@ class Mancala:
         p1_mancala_index and p2_mancala_index: These variables hold the indices of the Mancala pits on the board for players 1 and 2, respectively.
         """
         self.pits_per_player = pits_per_player
-        self.board = [stones_per_pit] * ((pits_per_player + 1) * 2)  # Initialize each pit with stones_per_pit number of stones
+        self.board = [stones_per_pit] * ((pits_per_player+1) * 2)  # Initialize each pit with stones_per_pit number of stones 
         self.players = 2
         self.current_player = 1
         self.moves = []
-        self.p1_pits_index = [0, self.pits_per_player - 1]
+        self.p1_pits_index = [0, self.pits_per_player-1]
         self.p1_mancala_index = self.pits_per_player
-        self.p2_pits_index = [self.pits_per_player + 1, len(self.board) - 1 - 1]
-        self.p2_mancala_index = len(self.board) - 1
-
+        self.p2_pits_index = [self.pits_per_player+1, len(self.board)-1-1]
+        self.p2_mancala_index = len(self.board)-1
+        self.p1_win = 0
+        self.p2_win = 0
+        self.game_draw = 0
+        
         # Zeroing the Mancala for both players
         self.board[self.p1_mancala_index] = 0
         self.board[self.p2_mancala_index] = 0
@@ -45,59 +37,60 @@ class Mancala:
         """
         Displays the board in a user-friendly format
         """
-        player_1_pits = self.board[self.p1_pits_index[0]: self.p1_pits_index[1] + 1]
+        player_1_pits = self.board[self.p1_pits_index[0]: self.p1_pits_index[1]+1]
         player_1_mancala = self.board[self.p1_mancala_index]
-        player_2_pits = self.board[self.p2_pits_index[0]: self.p2_pits_index[1] + 1]
+        player_2_pits = self.board[self.p2_pits_index[0]: self.p2_pits_index[1]+1]
         player_2_mancala = self.board[self.p2_mancala_index]
-
         print('P1               P2')
         print('     ____{}____     '.format(player_2_mancala))
         for i in range(self.pits_per_player):
             if i == self.pits_per_player - 1:
-                print('{} -> |_{}_|_{}_| <- {}'.format(i + 1, player_1_pits[i],
-                                                       player_2_pits[-(i + 1)], self.pits_per_player - i))
-            else:
-                print('{} -> | {} | {} | <- {}'.format(i + 1, player_1_pits[i],
-                                                       player_2_pits[-(i + 1)], self.pits_per_player - i))
-
+                print('{} -> |_{}_|_{}_| <- {}'.format(i+1, player_1_pits[i], 
+                        player_2_pits[-(i+1)], self.pits_per_player - i))
+            else:    
+                print('{} -> | {} | {} | <- {}'.format(i+1, player_1_pits[i], 
+                        player_2_pits[-(i+1)], self.pits_per_player - i))
         print('         {}         '.format(player_1_mancala))
-        turn = color.RED + 'Turn: P1' + color.END if self.current_player == 1 else color.CYAN + 'Turn: P2' + color.END
-        print(turn)
-
+        
     def valid_move(self, pit):
         """
         Function to check if the pit chosen by the current_player is a valid move.
         """
-
-        # write your code here
-        return True if pit in range(0, len(self.board)) and self.board[pit] != 0 else False
-
+        if pit < 1 or pit > self.pits_per_player:
+            return False
+        if self.current_player == 1:
+            board_index = pit - 1
+            if board_index < self.p1_pits_index[0] or board_index > self.p1_pits_index[1]:
+                return False
+            if self.board[board_index] == 0:
+                return False
+        else:
+            board_index = self.p2_pits_index[0] + (pit - 1)
+            if board_index < self.p2_pits_index[0] or board_index > self.p2_pits_index[1]:
+                return False
+            if self.board[board_index] == 0:
+                return False
+        return True
+        
     def random_move_generator(self):
         """
         Function to generate random valid moves with non-empty pits for the random player
         """
-
-        # write your code here
+        valid_pits = []
         if self.current_player == 1:
-            pits = range(self.p1_pits_index[0], self.p1_pits_index[1]+1)
+            for pit in range(1, self.pits_per_player + 1):
+                board_index = pit - 1
+                if self.board[board_index] > 0:
+                    valid_pits.append(pit)
         else:
-            pits = range(self.p2_pits_index[0], self.p2_pits_index[1]+1)
-
-        available_pits = [x for x in pits if self.board[x] > 0]
-
-        if not available_pits:
-            print('No available pits')
-
-        chosen_pit = random.choice(available_pits)
-
-        if self.current_player == 1:
-            pit_num = chosen_pit + 1
-        else:
-            pit_num = chosen_pit - self.p1_mancala_index
-
-        self.play(pit_num)
-
-
+            for pit in range(1, self.pits_per_player + 1):
+                board_index = self.p2_pits_index[0] + (pit - 1)
+                if self.board[board_index] > 0:
+                    valid_pits.append(pit)
+        if valid_pits:
+            return random.choice(valid_pits)
+        return None
+    
     def play(self, pit):
         """
         This function simulates a single move made by a specific player using their selected pit. It primarily performs three tasks:
@@ -107,89 +100,81 @@ class Mancala:
 
         Finally, the function then switches the current player, allowing the other player to take their turn.
         """
-
-        # write your code here
-
-        pit_index = self.get_pit_index(pit)
-
+        if self.winning_eval():
+            if (self.p1_mancala_index > self.p2_mancala_index):
+                print(f"{color.GREEN}GAME OVER{color.END}\nP1 wins!")
+                self.p1_win += 1
+                print(self.p1_win)
+            elif(self.p2_mancala_index > self.p1_mancala_index):
+                print(f"{color.RED}GAME OVER{color.END}\nP2 wins!")
+                self.p2_win += 1
+                print(self.p2_win)
+            else:
+                print(f"{color.YELLOW}Draw!{color.END}")
+                self.game_draw += 1
+                print(self.game_draw)
+            return self.board
+        if not self.valid_move(pit):
+            print("INVALID MOVE")
+            return self.board
+        
         if self.current_player == 1:
             print(f'{color.RED}Player {self.current_player} chose pit: {pit} {color.END}')
         else:
             print(f'{color.CYAN}Player {self.current_player} chose pit: {pit} {color.END}')
-
-        if not self.valid_move(pit_index):
-            print("INVALID MOVE")
-            self.switch_player()
-            return
         self.moves.append((self.current_player, pit))
-
-        stones = self.board[pit_index]  # stones in pit
-        self.board[pit_index] = 0  # empty current pit
-
-        index = pit_index
-        while stones > 0:
-            index = (index + 1) % len(self.board)
-
-            # skip over opponent's mancala
-            if self.current_player == 1 and index == self.p2_mancala_index:
-                continue
-            if self.current_player == 2 and index == self.p1_mancala_index:
-                continue
-
-            self.board[index] += 1
-            stones -= 1
-
-        last_pit = index
-
-        if self.current_player == 1 and self.p1_pits_index[0] <= last_pit <= self.p1_pits_index[1] :
-            if self.board[last_pit] == 1: # if pit was empty before, and now it has one
-                opp_pit = len(self.board) - 2 - last_pit
-
-                if self.board[last_pit] > 0:
-                    captured_stones = self.board[last_pit] + self.board[opp_pit]
-                    self.board[last_pit] = 0
-                    self.board[opp_pit] = 0
-                    self.board[self.p1_mancala_index] = captured_stones
-
-        if self.current_player == 2 and self.p2_pits_index[0] <= last_pit <= self.p2_pits_index[1] :
-            if self.board[last_pit] == 1: # if pit was empty before, and now it has one
-                opp_pit = len(self.board) - 2 - last_pit
-                if self.board[last_pit] > 0:
-                    captured_stones = self.board[last_pit] + self.board[opp_pit]
-                    self.board[last_pit] = 0
-                    self.board[opp_pit] = 0
-                    self.board[self.p2_mancala_index] = captured_stones
-        if self.winning_eval():
-            print("GAME OVER")
-            if (self.p1_mancala_index > self.p2_mancala_index):
-                print("P1 win")
-            elif(self.p2_mancala_index > self.p1_mancala_index):
-                print("P2 win")
-            else:
-                print("Draw")
-            return
-        self.switch_player()
-
-    # helper function to get the pit index
-    def get_pit_index(self, pit_num):
         if self.current_player == 1:
-            return pit_num - 1
+            current_pit_index = pit - 1
         else:
-            return self.p1_mancala_index + pit_num
-
-    # helper function to switch the players more easily
-    def switch_player(self):
+            current_pit_index = self.p2_pits_index[0] + (pit - 1)
+        stones = self.board[current_pit_index]
+        self.board[current_pit_index] = 0
+        current_index = current_pit_index
+        opponent_mancala = self.p2_mancala_index if self.current_player == 1 else self.p1_mancala_index
+        while stones > 0:
+            current_index = (current_index + 1) % len(self.board)
+            if current_index == opponent_mancala:
+                continue
+            self.board[current_index] += 1
+            stones -= 1
+        if self.current_player == 1:
+            if (current_index >= self.p1_pits_index[0] and 
+                current_index <= self.p1_pits_index[1] and 
+                self.board[current_index] == 1):
+                opposite_index = self.p2_pits_index[1] - (current_index - self.p1_pits_index[0])
+                if self.board[opposite_index] > 0:
+                    captured = self.board[opposite_index] + self.board[current_index]
+                    self.board[opposite_index] = 0
+                    self.board[current_index] = 0
+                    self.board[self.p1_mancala_index] += captured
+        else:
+            if (current_index >= self.p2_pits_index[0] and 
+                current_index <= self.p2_pits_index[1] and 
+                self.board[current_index] == 1):
+                opposite_index = self.p1_pits_index[1] - (current_index - self.p2_pits_index[0])
+                if self.board[opposite_index] > 0:
+                    captured = self.board[opposite_index] + self.board[current_index]
+                    self.board[opposite_index] = 0
+                    self.board[current_index] = 0
+                    self.board[self.p2_mancala_index] += captured
         self.current_player = 2 if self.current_player == 1 else 1
-
-
+        return self.board
+    
     def winning_eval(self):
         """
         Function to verify if the game board has reached the winning state.
         Hint: If either of the players' pits are all empty, then it is considered a winning state.
         """
-
-        # write your code here
-        p1_empty = all(self.board[i] == 0 for i in range(self.p1_pits_index[0], self.p1_pits_index[1]+1))
-        p2_empty = all(self.board[i] == 0 for i in range(self.p2_pits_index[0], self.p2_pits_index[1]+1))
-
-        return p1_empty or p2_empty
+        p1_empty = all(self.board[i] == 0 for i in range(self.p1_pits_index[0], self.p1_pits_index[1] + 1))
+        p2_empty = all(self.board[i] == 0 for i in range(self.p2_pits_index[0], self.p2_pits_index[1] + 1))
+        if p1_empty or p2_empty:
+            if not p1_empty:
+                for i in range(self.p1_pits_index[0], self.p1_pits_index[1] + 1):
+                    self.board[self.p1_mancala_index] += self.board[i]
+                    self.board[i] = 0
+            if not p2_empty:
+                for i in range(self.p2_pits_index[0], self.p2_pits_index[1] + 1):
+                    self.board[self.p2_mancala_index] += self.board[i]
+                    self.board[i] = 0
+            return True
+        return False

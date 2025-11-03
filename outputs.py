@@ -1,41 +1,41 @@
 from MancalaGame import Mancala
+from color import color
+
+turns_per_game = []
+p1_win = 0
+p2_win = 0
+draw = 0
 
 
-# Mancala part 2
-game = Mancala(pits_per_player=6, stones_per_pit=4)
-game.display_board()
+for play_game in range(4):
+    game = Mancala(pits_per_player=6, stones_per_pit=4)
+    # game.display_board()
+    i = 0
+    
+    print(f"{color.BOLD + color.UNDERLINE}START GAME #: {play_game+1}{color.END}")
 
-# turn 1
-game.play(3)
-game.display_board()
+    while not game.winning_eval():
+        print(f"{color.BOLD}Turn number: {i+1}{color.END}")
 
-game.random_move_generator()
-game.display_board()
+        # player 
+        game.play(game.random_move_generator())
+        # game.display_board()
 
-# turn 2
-game.play(6)
-game.display_board()
+        game.play(game.random_move_generator())
+        # game.display_board()
 
-game.random_move_generator()
-game.display_board()
+        i += 1
 
-# turn 3
-game.play(5)
-game.display_board()
+    turns_per_game.append(i)
+    p1_win += game.p1_win
+    p2_win += game.p2_win
+    draw += game.game_draw
+    print(turns_per_game)
+    print(p1_win)
+    print(p2_win)
+    print(draw)
 
-game.random_move_generator()
-game.display_board()
-
-# turn 4
-game.play(2)
-game.display_board()
-
-game.random_move_generator()
-game.display_board()
-
-# turn 5
-game.play(1)
-game.display_board()
-
-game.random_move_generator()
-game.display_board()
+print(f"{color.BOLD}{color.GREEN}GAME STATS{color.END}")
+print("Player 1 wins", p1_win)
+print("Player 1 loses", p2_win)
+print("Draws", draw)
