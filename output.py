@@ -33,10 +33,12 @@ for play in range(total_games):
             print(f'{color.BOLD}Turn #{i+1}{color.END}')
 
         game.play(game.random_move_generator())
-        # game.display_board()
+        if(game.print_output):
+            game.display_board()
 
         game.play(game.random_move_generator())
-        # game.display_board()
+        if (game.print_output):
+            game.display_board()
         i += 1
     game.check_win()
 
