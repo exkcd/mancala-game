@@ -3,7 +3,7 @@ from color import color
 
 
 class Mancala:
-    def __init__(self, pits_per_player=6, stones_per_pit=4):
+    def __init__(self, pits_per_player=6, stones_per_pit=4, print_output=True):
         self.pits_per_player = pits_per_player
         # Initialize each pit with stones_per_pit number of stones
         self.board = [stones_per_pit] * ((pits_per_player + 1) * 2)
@@ -19,6 +19,7 @@ class Mancala:
         self.p1_win = 0
         self.p2_win = 0
         self.draw = 0
+        self.print_output = print_output
 
         # Zeroing the Mancala for both players
         self.board[self.p1_mancala_index] = 0
@@ -69,11 +70,13 @@ class Mancala:
             return self.board
         
         if not self.winning_eval():
-            self.print_moves(pit)
+            if self.print_output:
+                self.print_moves(pit)
             current_index = self.get_pit_index(pit)
 
             if not self.valid_move(pit):
-                print("INVALID MOVE")
+                if self.print_output:
+                    print("INVALID MOVE")
                 return self.board
 
             stones = self.board[current_index]  # get amount of stones
@@ -89,6 +92,7 @@ class Mancala:
                 stones -= 1
 
             self.capture_stones(current_index)
+            self.moves.append((self.current_player, pit))
             self.switch_player()
         return self.board
 
@@ -139,15 +143,17 @@ class Mancala:
         if self.winning_eval():
             p1_total = self.board[self.p1_mancala_index]
             p2_total = self.board[self.p2_mancala_index]
-            print("GAME OVER")
             if p1_total > p2_total:
-                print(f'{color.BLUE}P1 wins!{color.END}')
+                if self.print_output:
+                    print(f'{color.BOLD + color.BLUE}GAME OVER: P1 wins!{color.END}')
                 self.p1_win = 1
             elif p2_total > p1_total:
-                print(f'{color.RED}P2 wins!{color.END}')
+                if self.print_output:
+                    print(f'{color.BOLD + color.RED}GAME OVER: P2 wins!{color.END}')
                 self.p2_win = 1
             else:
-                print(f'{color.YELLOW}P1 wins!{color.END}')
+                if self.print_output:
+                    print(f'{color.BOLD + color.YELLOW}GAME OVER: It\'s a draw!{color.END}')
                 self.draw = 1
         return
 
