@@ -14,6 +14,6 @@ get_pit_index: get current pit
 print_moves: print which pit the current player selected
 capture_stones: captures stones, increasing the mancala of whoever captured the stones
 
-So far, both random players are working and fully functional. We have code in the `output.py` file that runs through one hundred Mancala games and then reports all of the statistics afterwards. 
+So far, both random players are working and fully functional. We have code in the `output.py` file that runs through one hundred Mancala games and then reports all of the statistics afterwards.
 
 There is not a first move advantage, this makes sense since both players are playing randomly for now.

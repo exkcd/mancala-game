@@ -1,8 +1,7 @@
 from MancalaGame import Mancala
-from color import color
 import numpy as np
 import random
-from formatting import stat_title, list_stat
+from formatting import color, stat_title, list_stat
 
 random_player = [1, 2]
 

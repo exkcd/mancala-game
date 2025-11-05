@@ -19,3 +19,23 @@ Name(s): Alex Schwarz, Rey Stone
 - If either player's pits are entirely empty, the game concludes.
 - The player who still has stones on his side of the board when the game concludes places all of these pieces into their mancala.
   The player with the most stones in their mancala is declared the winner. If both players have an equal number of stones in their mancala, the game results in a tie.
+
+## Files
+
+There are several files contianed in this repo integral for running the game.
+
+- `MancalaGame.py` &rarr; contains the entire game file
+- `formatting.py` &rarr; formats the shell output to look pretty
+- `run.py` &rarr; runs the simulation of 100 games
+
+## Playing the Game
+
+Copy this repo and run the following commands.
+
+```shell
+git clone https://github.com/exkcd/mancala-game.git
+
+cd mancala-game
+
+python3 output.py
+```

@@ -1,5 +1,5 @@
 import random
-from color import color
+from formatting import color
 
 
 class Mancala:
