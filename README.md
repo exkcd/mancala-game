@@ -27,6 +27,7 @@ There are several files contianed in this repo integral for running the game.
 - `MancalaGame.py` &rarr; contains the entire game file
 - `formatting.py` &rarr; formats the shell output to look pretty
 - `run.py` &rarr; runs the simulation of 100 games
+- `report.md` &rarr; intermediate project report
 
 ## Playing the Game
 
