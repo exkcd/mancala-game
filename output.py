@@ -63,4 +63,4 @@ list_stat("Avg turns per game:", f"{round(np.average(p2_turns))}", 19)
 
 stat_title("GAME STATS", 14)
 list_stat("Draw %:", f"{round((draw/total_games)*100)}%", 31)
-list_stat("First Turn Advantage:", f"{(wins_w_first)}", 18)
+list_stat("First Turn Advantage:", f"{round((wins_w_first/total_games)*100)}%", 17)
