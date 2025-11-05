@@ -20,6 +20,8 @@ class Mancala:
         self.p2_win = 0
         self.draw = 0
         self.print_output = print_output
+        self.first=0
+        self.wins_w_first=0
 
         # Zeroing the Mancala for both players
         self.board[self.p1_mancala_index] = 0
@@ -147,10 +149,14 @@ class Mancala:
                 if self.print_output:
                     print(f'{color.BOLD + color.BLUE}GAME OVER: P1 wins!{color.END}')
                 self.p1_win = 1
+                if(self.first==1):
+                    self.wins_w_first+=1
             elif p2_total > p1_total:
                 if self.print_output:
                     print(f'{color.BOLD + color.RED}GAME OVER: P2 wins!{color.END}')
                 self.p2_win = 1
+                if(self.first==2):
+                    self.wins_w_first+=1
             else:
                 if self.print_output:
                     print(f'{color.BOLD + color.YELLOW}GAME OVER: It\'s a draw!{color.END}')

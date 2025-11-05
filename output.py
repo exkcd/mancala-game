@@ -14,12 +14,14 @@ p2_turns = []
 p1_win = 0
 p2_win = 0
 draw = 0
+wins_w_first = 0
 
 for play in range(total_games):
     game = Mancala(pits_per_player=6, stones_per_pit=4, print_output=False)
 
     # intialize random player to go first
     game.current_player = random.choice(random_player)
+    game.first = game.current_player
 
     if game.print_output:
         print(
@@ -44,6 +46,10 @@ for play in range(total_games):
     p1_win += game.p1_win
     p2_win += game.p2_win
     draw += game.draw
+    #print("who first: " + str(game.first))
+    #print("wins: " + str(game.wins_w_first))
+    #print("total wins: " + str(wins_w_first))
+    wins_w_first += game.wins_w_first
 
 stat_title("PLAYER 1 STATS", 12)
 list_stat("P1 win %:", f"{round((p1_win/total_games)*100)}%", 29)
@@ -57,4 +63,4 @@ list_stat("Avg turns per game:", f"{round(np.average(p2_turns))}", 19)
 
 stat_title("GAME STATS", 14)
 list_stat("Draw %:", f"{round((draw/total_games)*100)}%", 31)
-list_stat("First Turn Advantage:", f"TBD", 18)
+list_stat("First Turn Advantage:", f"{(wins_w_first)}", 18)
