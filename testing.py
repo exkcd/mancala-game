@@ -2,12 +2,12 @@ from MancalaGame import Mancala
 import numpy as np
 import random
 from utilities.formatting import color, stat_title, list_stat
-from utilities.algorithms import minmax_decision
+from utilities.algorithms import minmax_decision, alpha_beta_search
 from copy import deepcopy
 
 random_player = [1, 2]
 
-total_games = 1
+total_games = 100
 
 p1_turns = []
 p2_turns = []
@@ -34,7 +34,7 @@ for play in range(total_games):
             print(f'{color.BOLD}Turn #{i+1}{color.END}')
 
         if game.current_player == 1:
-            move = minmax_decision(deepcopy(game), depth=10)
+            move = minmax_decision(deepcopy(game), depth=4)
             print(f'AI chose pit {move}')
             game.play(move)
 
