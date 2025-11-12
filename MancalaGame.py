@@ -1,6 +1,5 @@
 import random
-from formatting import color
-
+from utilities.formatting import color
 
 class Mancala:
     def __init__(self, pits_per_player=6, stones_per_pit=4, print_output=True):
@@ -20,6 +19,8 @@ class Mancala:
         self.p2_win = 0
         self.draw = 0
         self.print_output = print_output
+
+        # winning advantage
         self.first= 0
         self.wins_w_first= 0
 
@@ -48,8 +49,22 @@ class Mancala:
 
         print('         {}         '.format(player_1_mancala))
 
-    def valid_move(self, pit):
+    def valid_move(self, pit): # actions
         return True if pit in range(1, self.pits_per_player+1) else False
+    
+    def actions(self):
+        valid_pits = []
+        if self.current_player == 1:
+            for pit in range(1, self.pits_per_player + 1):
+                board_index = pit - 1
+                if self.board[board_index] > 0:
+                    valid_pits.append(pit)
+        else:
+            for pit in range(1, self.pits_per_player + 1):
+                board_index = self.p2_pits_index[0] + (pit - 1)
+                if self.board[board_index] > 0:
+                    valid_pits.append(pit)
+        return valid_pits
 
     def random_move_generator(self):
         valid_pits = []
@@ -67,7 +82,7 @@ class Mancala:
             return random.choice(valid_pits)
         return None
 
-    def play(self, pit):
+    def play(self, pit): # result
         if pit is None:
             return self.board
         
@@ -146,22 +161,21 @@ class Mancala:
             p1_total = self.board[self.p1_mancala_index]
             p2_total = self.board[self.p2_mancala_index]
             if p1_total > p2_total:
-                if self.print_output:
-                    print(f'{color.BOLD + color.BLUE}GAME OVER: P1 wins!{color.END}')
                 self.p1_win = 1
                 if(self.first == 1):
                     self.wins_w_first += 1
+                # if self.print_output:
+                print(f'{color.BOLD + color.BLUE}GAME OVER: P1 wins!{color.END}')
             elif p2_total > p1_total:
-                if self.print_output:
-                    print(f'{color.BOLD + color.RED}GAME OVER: P2 wins!{color.END}')
-                self.p2_win = 1
                 if(self.first == 2):
                     self.wins_w_first += 1
+                    self.p2_win = 1
+                # if self.print_output:
+                print(f'{color.BOLD + color.RED}GAME OVER: P2 wins!{color.END}')
             else:
-                if self.print_output:
-                    print(f'{color.BOLD + color.YELLOW}GAME OVER: It\'s a draw!{color.END}')
                 self.draw = 1
-        return
+                # if self.print_output:
+                print(f'{color.BOLD + color.YELLOW}GAME OVER: It\'s a draw!{color.END}')
 
     def winning_eval(self):
         p1_empty = all(self.board[i] == 0 for i in range(
@@ -179,3 +193,9 @@ class Mancala:
                     self.board[i] = 0
 
         return True if p1_empty or p2_empty else False
+    
+    def utility(self, state, player):
+        if self.current_player == 1:
+            return self.board[self.p1_mancala_index]- self.board[self.p2_mancala_index]
+        else:
+            return self.board[self.p2_mancala_index] - self.board[self.p1_mancala_index]
