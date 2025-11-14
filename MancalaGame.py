@@ -164,18 +164,18 @@ class Mancala:
                 self.p1_win = 1
                 if(self.first == 1):
                     self.wins_w_first += 1
-                # if self.print_output:
-                print(f'{color.BOLD + color.BLUE}GAME OVER: P1 wins!{color.END}')
+                if self.print_output:
+                    print(f'{color.BOLD + color.BLUE}GAME OVER: P1 wins!{color.END}')
             elif p2_total > p1_total:
+                self.p2_win = 1
                 if(self.first == 2):
-                    self.wins_w_first += 1
-                    self.p2_win = 1
-                # if self.print_output:
-                print(f'{color.BOLD + color.RED}GAME OVER: P2 wins!{color.END}')
-            else:
+                    self.wins_w_first = 1
+                if self.print_output:
+                    print(f'{color.BOLD + color.RED}GAME OVER: P2 wins!{color.END}')
+            elif p1_total == p2_total:
                 self.draw = 1
-                # if self.print_output:
-                print(f'{color.BOLD + color.YELLOW}GAME OVER: It\'s a draw!{color.END}')
+                if self.print_output:
+                    print(f'{color.BOLD + color.YELLOW}GAME OVER: It\'s a draw!{color.END}')
 
     def winning_eval(self):
         p1_empty = all(self.board[i] == 0 for i in range(

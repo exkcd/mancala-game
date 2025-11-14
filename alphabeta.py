@@ -34,15 +34,13 @@ for play in range(total_games):
             print(f'{color.BOLD}Turn #{i+1}{color.END}')
 
         if game.current_player == 1:
-            move = minmax_decision(deepcopy(game), depth=4)
-            print(f'AI chose pit {move}')
+            move = alpha_beta_search(deepcopy(game), depth=4)
             game.play(move)
 
             if(game.print_output):
                 game.display_board()
         else:
             move = game.random_move_generator()
-            print(f'AI chose pit {move}')
             game.play(move)
             if (game.print_output):
                 game.display_board()
