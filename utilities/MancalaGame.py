@@ -195,7 +195,59 @@ class Mancala:
         return True if p1_empty or p2_empty else False
     
     def utility(self, state, player):
-        if self.current_player == 1:
-            return self.board[self.p1_mancala_index]- self.board[self.p2_mancala_index]
+        if player == 1:
+            return self.board[self.p1_mancala_index] - self.board[self.p2_mancala_index]
         else:
             return self.board[self.p2_mancala_index] - self.board[self.p1_mancala_index]
+        
+    def play_with_undo(self, pit):
+        """
+        Play a move and return the state needed to undo it.
+        Returns: dict with undo information, or None if invalid move
+        """
+        if pit is None or not self.valid_move(pit):
+            return None
+        
+        if self.winning_eval():
+            return None
+        
+        # Save state for undo
+        undo_info = {
+            'board': self.board.copy(),  # Shallow copy of list is fast
+            'current_player': self.current_player,
+            'moves_length': len(self.moves)
+        }
+        
+        current_index = self.get_pit_index(pit)
+        stones = self.board[current_index]
+        self.board[current_index] = 0
+        opponent_mancala = self.p2_mancala_index if self.current_player == 1 else self.p1_mancala_index
+        
+        # Distribute stones
+        while stones > 0:
+            current_index = (current_index + 1) % len(self.board)
+            if current_index == opponent_mancala:
+                continue
+            self.board[current_index] += 1
+            stones -= 1
+        
+        # Capture stones
+        self.capture_stones(current_index)
+        self.moves.append((self.current_player, pit))
+        self.switch_player()
+        
+        return undo_info
+
+    def undo_move(self, undo_info):
+        """
+        Undo a move using the saved undo information.
+        """
+        if undo_info is None:
+            return
+        
+        self.board = undo_info['board']
+        self.current_player = undo_info['current_player']
+        
+        # Remove moves that were added
+        while len(self.moves) > undo_info['moves_length']:
+            self.moves.pop()

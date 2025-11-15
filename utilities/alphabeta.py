@@ -1,39 +1,52 @@
-def alpha_beta_search(game, depth=4):
-    player= game.current_player
+import numpy as np
 
-    def max_value(state, alpha, beta, depth):
-        if depth==0 or state.winning_eval():
-            return state.utility(state.board, player)
+
+def alpha_beta_search(game, depth=4):
+    player = game.current_player
+
+    def max_value(alpha, beta, depth):
+        if depth == 0 or game.winning_eval():
+            return game.utility(game.board, player)
+
         v = -np.inf
-        for a in state.actions():
-            new_state = deepcopy(state)
-            new_state.play(a)
-            v=max(v, min_value(new_state, alpha, beta, depth-1))
-            if (v >= beta):
+        for a in game.actions():
+            undo_info = game.play_with_undo(a)
+            v = max(v, min_value(alpha, beta, depth-1))
+            game.undo_move(undo_info)
+
+            if v >= beta:
                 return v
             alpha = max(alpha, v)
         return v
-    def min_value(state, alpha, beta, depth):
-        if depth==0 or state.winning_eval():
-            return state.utility(state.board, player)
-        v=np.inf
-        for a in state.actions():
-            new_state = deepcopy(state)
-            new_state.play(a)
-            v=min(v, max_value(new_state, alpha, beta, depth -1))
-            if v<= alpha:
+
+    def min_value(alpha, beta, depth):
+        if depth == 0 or game.winning_eval():
+            return game.utility(game.board, player)
+
+        v = np.inf
+        for a in game.actions():
+            undo_info = game.play_with_undo(a)
+            v = min(v, max_value(alpha, beta, depth-1))
+            game.undo_move(undo_info)
+
+            if v <= alpha:
                 return v
-            beta=min(beta, v)
+            beta = min(beta, v)
         return v
-    
+
     best_score = -np.inf
-    beta=np.inf
-    best_action= None
+    alpha = -np.inf
+    beta = np.inf
+    best_action = None
+
     for a in game.actions():
-        new_state = deepcopy(game)
-        new_state.play(a)
-        v = min_value(new_state, best_score, beta, depth -1)
-        if (v > best_score):
+        undo_info = game.play_with_undo(a)
+        v = min_value(alpha, beta, depth-1)
+        game.undo_move(undo_info)
+
+        if v > best_score:
             best_score = v
             best_action = a
+            alpha = v
+
     return best_action

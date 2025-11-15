@@ -40,7 +40,7 @@ for play in tqdm(range(total_games)):
             print(f'{color.BOLD}Turn #{i+1}{color.END}')
 
         if game.current_player == 1:
-            move = alpha_beta_search(deepcopy(game), depth=4)
+            move = minmax_decision(game, depth=5)
             game.play(move)
 
             if(game.print_output):
@@ -59,7 +59,8 @@ for play in tqdm(range(total_games)):
     wins["draw"] += game.draw
     wins["wins_first"] += game.wins_w_first
 
-stat_title("\nPLAYER 1 STATS", 12)
+print("\n")
+stat_title("PLAYER 1 STATS", 12)
 list_stat("P1 win %:", f"{round((wins["p1"]/total_games)*100)}%", 29)
 list_stat("P1 loss %:", f"{round((wins["p2"]/total_games)*100)}%", 28)
 list_stat("Avg turns per game:", f"{round(np.average(p1_turns))}", 19)
