@@ -24,9 +24,9 @@ wins = {
 
 for play in tqdm(range(total_games)):
 
-    game = Mancala(pits_per_player=6, stones_per_pit=4, print_output=True)
+    game = Mancala(pits_per_player=6, stones_per_pit=4, print_output=False, continue_turn=False)
 
-    # intialize random player to go first
+    # initialize random player to go first
     game.current_player = random.choice(random_player)
     game.first = game.current_player
 
@@ -43,7 +43,7 @@ for play in tqdm(range(total_games)):
             move = alpha_beta_search(game, depth=5)
             game.play(move)
 
-            if(game.print_output):
+            if (game.print_output):
                 game.display_board()
         else:
             game.play(game.random_move_generator())
@@ -72,4 +72,5 @@ list_stat("Avg turns per game:", f"{round(np.average(p2_turns))}", 19)
 
 stat_title("GAME STATS", 14)
 list_stat("Draw %:", f"{round((wins['draw']/total_games)*100)}%", 31)
-list_stat("First Turn Advantage %:", f"{round((wins['wins_first']/total_games)*100)}%", 15)
+list_stat("First Turn Advantage %:",
+          f"{round((wins['wins_first']/total_games)*100)}%", 15)
