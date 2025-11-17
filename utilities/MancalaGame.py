@@ -110,7 +110,16 @@ class Mancala:
 
             self.capture_stones(current_index)
             self.moves.append((self.current_player, pit))
-            self.switch_player()
+            player_mancala = self.p1_mancala_index if self.current_player == 1 else self.p2_mancala_index
+            if current_index != player_mancala:
+                self.switch_player()
+            elif self.print_output:
+                if self.current_player == 1:
+                    print(
+                    f'{color.BLUE}Player {self.current_player} gets another turn!{color.END}')
+                else:
+                    print(
+                    f'{color.RED}Player {self.current_player} gets another turn!{color.END}')
         return self.board
 
     def capture_stones(self, current_index):
@@ -234,7 +243,9 @@ class Mancala:
         # Capture stones
         self.capture_stones(current_index)
         self.moves.append((self.current_player, pit))
-        self.switch_player()
+        player_mancala = self.p1_mancala_index if self.current_player == 1 else self.p2_mancala_index
+        if current_index != player_mancala:
+            self.switch_player()
         
         return undo_info
 
