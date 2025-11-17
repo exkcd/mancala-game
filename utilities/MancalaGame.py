@@ -150,12 +150,7 @@ class Mancala:
             if current_index != player_mancala:
                 self.switch_player()
             elif self.print_output:
-                if self.current_player == 1:
-                    print(
-                        f'{color.BLUE}Player {self.current_player} gets another turn!{color.END}')
-                else:
-                    print(
-                        f'{color.RED}Player {self.current_player} gets another turn!{color.END}')
+                    print(f'{color.YELLOW}Player {self.current_player} gets another turn!{color.END}')
         else:
             self.switch_player()
 

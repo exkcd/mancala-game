@@ -4,8 +4,9 @@ import random
 from utilities.formatting import color, stat_title, list_stat
 from utilities.minmax import minmax_decision
 from utilities.alphabeta import alpha_beta_search
-from copy import deepcopy
 from tqdm import tqdm
+
+import time
 
 random_player = [1, 2]
 
@@ -22,6 +23,7 @@ wins = {
     "wins_first": 0
 }
 
+start = time.time()
 for play in tqdm(range(total_games)):
 
     game = Mancala(pits_per_player=6, stones_per_pit=4, print_output=False, continue_turn=False)
@@ -40,7 +42,7 @@ for play in tqdm(range(total_games)):
             print(f'{color.BOLD}Turn #{i+1}{color.END}')
 
         if game.current_player == 1:
-            move = alpha_beta_search(game, depth=5)
+            move = alpha_beta_search(game, depth=10)
             game.play(move)
 
             if (game.print_output):
@@ -59,6 +61,7 @@ for play in tqdm(range(total_games)):
     wins["draw"] += game.draw
     wins["wins_first"] += game.wins_w_first
 
+end = time.time()
 print("\n")
 stat_title("PLAYER 1 STATS", 12)
 list_stat("P1 win %:", f"{round((wins['p1']/total_games)*100)}%", 29)
@@ -72,5 +75,5 @@ list_stat("Avg turns per game:", f"{round(np.average(p2_turns))}", 19)
 
 stat_title("GAME STATS", 14)
 list_stat("Draw %:", f"{round((wins['draw']/total_games)*100)}%", 31)
-list_stat("First Turn Advantage %:",
-          f"{round((wins['wins_first']/total_games)*100)}%", 15)
+list_stat("First Turn Advantage %:",f"{round((wins['wins_first']/total_games)*100)}%", 15)
+list_stat("Time taken %:",f"{round(end-start, 1)}s", 25)
