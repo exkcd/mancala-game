@@ -26,7 +26,7 @@ wins = {
 start = time.time()
 for play in tqdm(range(total_games)):
 
-    game = Mancala(pits_per_player=6, stones_per_pit=4, print_output=False, continue_turn=False)
+    game = Mancala(pits_per_player=6, stones_per_pit=4, print_output=False, continue_turn=True)
 
     # initialize random player to go first
     game.current_player = random.choice(random_player)
@@ -76,4 +76,4 @@ list_stat("Avg turns per game:", f"{round(np.average(p2_turns))}", 19)
 stat_title("GAME STATS", 14)
 list_stat("Draw %:", f"{round((wins['draw']/total_games)*100)}%", 31)
 list_stat("First Turn Advantage %:",f"{round((wins['wins_first']/total_games)*100)}%", 15)
-list_stat("Time taken %:",f"{round(end-start, 1)}s", 25)
+list_stat("Time taken %:",f"{round(end-start, 5)}s", 25)
