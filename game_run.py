@@ -26,6 +26,7 @@ wins = {
 start = time.time()
 for play in tqdm(range(total_games)):
 
+    # To change the continuation rule, edit the parameter "continue_turn"
     game = Mancala(pits_per_player=6, stones_per_pit=4, print_output=False, continue_turn=True)
 
     # initialize random player to go first
